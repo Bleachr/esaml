@@ -162,8 +162,10 @@ digest(Element, HashFunction) ->
 %% than rsa+sha1 or sha256 this will asplode. Don't say I didn't warn you.
 -spec verify(Element :: #xmlElement{}, Fingerprints :: [fingerprint()] | any) -> ok | {error, bad_digest | bad_signature | cert_not_accepted}.
 verify(Element, Fingerprints) ->
-    DsNs = [{"ds", 'http://www.w3.org/2000/09/xmldsig#'},
-        {"ec", 'http://www.w3.org/2001/10/xml-exc-c14n#'}],
+    DsNs = [
+            {"ds", 'http://www.w3.org/2000/09/xmldsig#'},
+            {"ds", 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256'},
+            {"ec", 'http://www.w3.org/2001/10/xml-exc-c14n#'}],
 
     [#xmlAttribute{value = SignatureMethodAlgorithm}] = xmerl_xpath:string("ds:Signature/ds:SignedInfo/ds:SignatureMethod/@Algorithm", Element, [{namespace, DsNs}]),
     {HashFunction, _, _} = signature_props(SignatureMethodAlgorithm),
